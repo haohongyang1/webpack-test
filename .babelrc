@@ -1,0 +1,13 @@
+{
+    "presets": [
+        ["@babel/preset-env", {
+            // 使用的api会自动转化，并且是按需加载
+            "useBuiltIns": "usage",
+            // babel-polyfill
+            "corejs": 2
+        }]
+    ],
+    "plugins": [
+        ["@babel/plugin-proposal-class-properties", { loose: true }] // 是否松匹配的配置，false:Object.defineproperty, true:function
+    ]
+}
