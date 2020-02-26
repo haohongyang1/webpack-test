@@ -12,6 +12,19 @@
     - [6.清空打包结果](#6%E6%B8%85%E7%A9%BA%E6%89%93%E5%8C%85%E7%BB%93%E6%9E%9C)
   - [二、 Webpack中必须要掌握的配置](#%E4%BA%8C-webpack%E4%B8%AD%E5%BF%85%E9%A1%BB%E8%A6%81%E6%8E%8C%E6%8F%A1%E7%9A%84%E9%85%8D%E7%BD%AE)
   - [三、 Webpack打包优化（打包大小、打包速度、模块拆分）](#%E4%B8%89-webpack%E6%89%93%E5%8C%85%E4%BC%98%E5%8C%96%E6%89%93%E5%8C%85%E5%A4%A7%E5%B0%8F%E6%89%93%E5%8C%85%E9%80%9F%E5%BA%A6%E6%A8%A1%E5%9D%97%E6%8B%86%E5%88%86)
+    - [1、压缩+删除无用代码；](#1%E5%8E%8B%E7%BC%A9%E5%88%A0%E9%99%A4%E6%97%A0%E7%94%A8%E4%BB%A3%E7%A0%81)
+    - [2、CDN加载文件；](#2cdn%E5%8A%A0%E8%BD%BD%E6%96%87%E4%BB%B6)
+    - [3、Tree-shaking(webpack自带) && Scope-hoistiong](#3tree-shakingwebpack%E8%87%AA%E5%B8%A6--scope-hoistiong)
+    - [4、DllPlugin && DllReferencePlugin](#4dllplugin--dllreferenceplugin)
+    - [5、动态加载；](#5%E5%8A%A8%E6%80%81%E5%8A%A0%E8%BD%BD)
+    - [6、打包文件分析工具 && 费时分析](#6%E6%89%93%E5%8C%85%E6%96%87%E4%BB%B6%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7--%E8%B4%B9%E6%97%B6%E5%88%86%E6%9E%90)
+    - [7、SplitChunks；](#7splitchunks)
+    - [8、热更新；](#8%E7%83%AD%E6%9B%B4%E6%96%B0)
+    - [9、IgnorePlugin；](#9ignoreplugin)
+    - [10、noParse；](#10noparse)
+    - [11、resolve；](#11resolve)
+    - [12、include/exclude；](#12includeexclude)
+    - [13、happypack；](#13happypack)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -94,19 +107,13 @@ devServer配置；
     - terser-webpack-plugin，压缩js文件
 - react+vue...
 - 多入口配置
-实践：
-```
-
-```
+实践：入口配置为对象，出口配置多个HTMLWebpackPlugin，通过 chunks 属性定义好对应的入口文件
 
 
 #### 三、 Webpack打包优化（打包大小、打包速度、模块拆分）
 
-1、应用：生产环境优化；
 
-2、文件压缩：optimize-css-assets-webpack-plugin，压缩打包插件
-
-1、压缩+删除无用代码；
+##### 1、压缩+删除无用代码；
 
 - 压缩css mini-css-extract-plugin
 - 删除无用css样式 [purgecss-webpack-plugin](
@@ -116,8 +123,8 @@ https://www.npmjs.com/package/glob)
 - 图片压缩插件(降低分辨率 ) [image-webpack-loader](
 https://www.npmjs.com/package/image-webpack-loader)
 
-3、CDN加载文件；
-- 意义：webpack打包出来的都会放到bundle.js（出口文件）中，bundle.js会非常庞大，所以我们引入CDN
+##### 2、CDN加载文件；
+- 意义：webpack打包出来的都会放到bundle.js（出口文件）中，bundle.js会非常庞大，所以我们引入CDN，**拆分bundle.js**
 - 使用：[bootcnd](https://www.bootcdn.cn/)，找到插件，复制script标签，粘贴进模板文件中，但是当文件较多时，不能都在index.html中引入，所以可以使用 [add-asset-html-cdn-webpack-plugin](https://www.npmjs.com/package/add-asset-html-cdn-webpack-plugin) 插件 
 ```
 plugins: [
@@ -133,49 +140,66 @@ externals: {
 }
 ```
 
-4、Tree-shaking(webpack自带) && Scope-hoistiong
+##### 3、Tree-shaking(webpack自带) && Scope-hoistiong
 - Tree-shaking
     - 作用：去除掉js无用代码； 
     - 适用范围：默认只支持 es6语法，静态导入，只在生产环境使用；
     - 需要注意的是：通过import引入的可执行文件代码，但是并未真实使用，需要在package.json中配置：**"sideEffects": true,** l（注意该种办法的副作用：如果引入css文件：import 'a.css'，也会被去除），可以根据需要指定文件类型：
     ```
-  "sideEffects": [
-    "**/*.css" // glob语法
-  ],
+      "sideEffects": [
+        "**/*.css" // glob语法
+      ]
     ```
 - Scope-hoistiong（自带）
     - 作用：由于webpack打包的每个模块都会生成一个函数，会导致内存过大，所以，引入scope-hoistiong，作用域提升，减少作用域
 
-5、DllPlugin && DllReferencePlugin
-- [DllPlugin 动态链接库](https://www.webpackjs.com/plugins/dll-plugin/) 某种方法实现了拆分 bundles，同时还大大提升了构建的速度（对项目运行优化没有帮助）
+##### 4、DllPlugin && DllReferencePlugin
+- [DllPlugin 动态链接库](https://www.webpackjs.com/plugins/dll-plugin/) 某种方法实现了**拆分 bundles**，同时还大大**提升了构建的速度（对项目运行优化没有帮助）**
     - 打包第三方库
     - 配置：/root/build/webpack.dll.js
     注：可以通过指定libraryTarget 来决定导出方式（导出方式即图中所示）
-    ![c36bb3e60b33093cbc166c3eab574c12.png](en-resource://database/428:0)
+    ![c36bb3e60b33093cbc166c3eab574c12.png](en-resource://database/428:1)
 - [DllReferencePlugin](https://www.webpackjs.com/plugins/dll-plugin/) 在项目中可以找到 上一步打包好的dll中的指定文件；
 ```
     new DllReferencePlugin({
-        manifest: path.resolve(__dirname, '../dll/mainfest.json')
+    manifest: path.resolve(__dirname, '../dll/mainfest.json')
     })
 ```
-6、动态加载；
-- 草案语法：import()
-    - 使用：动态导入，可以实现代码分割，应用在类比、路由懒加载...;
+##### 5、动态加载；
+- 草案语法：**import()**
+    - 使用：动态导入，可以实现**代码分割**，应用在类比、路由懒加载...;
     - 原理：**JSONP**;
     - 语法：返回值为Promise对象；
 - 为动态加载的文件更改文件名的配置：chunkFilename + 魔术字符串
 
 
-7、打包文件分析工具
+##### 6、打包文件分析工具 && 费时分析
 
-[webpack-bundle-analyzer](https://www.npmjs.com/package/webpack-bundle-analyzer)
+- 打包分析工具：[webpack-bundle-analyzer](https://www.npmjs.com/package/webpack-bundle-analyzer) 可以分析打包依赖关系，以及包的大小
+- 第三方库抽离，不同于dll这个是做缓存：生产环境下，将第三方库进行抽离：[optimization.splitchunks](https://webpack.js.org/plugins/split-chunks-plugin/#optimizationsplitchunks)
+- 费时分析：[speed-measure-webpack-plugin](https://www.npmjs.com/package/speed-measure-webpack-plugin) 
 
-8、SplitChunks；
-9、热更新；
-10、IgnorePlugin；
-11、费时分析；
-12、noParse；
-13、resolve；
-14、include/exclude；
-15、happypack；
+
+**小记**
+**DllPlugin与Optimization.splitChunks的区别**
+
+| 区别比较 | 是否优化页面加载速度？ | 执行时机 | 建议使用场景|
+| --- | --- | --- | --- |
+| **DllPlugin** | 否 | 构建之前抽离 |开发环境提升打包速度 |
+| **Optimization.splitChunks** | 是 | 编译过程中抽离 | 生产环境分割第三方代码|
+
+
+##### 7、SplitChunks；
+
+##### 8、热更新；
+
+##### 9、IgnorePlugin；
+
+
+##### 10、noParse；
+##### 11、resolve；
+##### 12、include/exclude；
+##### 13、happypack；
+[happypack](https://www.npmjs.com/package/happypack)多线程打包，将不同的逻辑交给不同的线程来处理
+
 
