@@ -1,4 +1,32 @@
-[TOC]
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [WEBPACK](#webpack)
+  - [一、从0搭建自己的webpack开发环境](#%E4%B8%80%E4%BB%8E0%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84webpack%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83)
+    - [1.什么是Webpack](#1%E4%BB%80%E4%B9%88%E6%98%AFwebpack)
+    - [2.初始化项目](#2%E5%88%9D%E5%A7%8B%E5%8C%96%E9%A1%B9%E7%9B%AE)
+    - [3.Webpack快速上手](#3webpack%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B)
+    - [4.Webpack-dev-server](#4webpack-dev-server)
+    - [5.打包html插件](#5%E6%89%93%E5%8C%85html%E6%8F%92%E4%BB%B6)
+    - [6.清空打包结果](#6%E6%B8%85%E7%A9%BA%E6%89%93%E5%8C%85%E7%BB%93%E6%9E%9C)
+  - [二、 Webpack中必须要掌握的配置](#%E4%BA%8C-webpack%E4%B8%AD%E5%BF%85%E9%A1%BB%E8%A6%81%E6%8E%8C%E6%8F%A1%E7%9A%84%E9%85%8D%E7%BD%AE)
+  - [三、 Webpack打包优化（打包大小、打包速度、模块拆分）](#%E4%B8%89-webpack%E6%89%93%E5%8C%85%E4%BC%98%E5%8C%96%E6%89%93%E5%8C%85%E5%A4%A7%E5%B0%8F%E6%89%93%E5%8C%85%E9%80%9F%E5%BA%A6%E6%A8%A1%E5%9D%97%E6%8B%86%E5%88%86)
+    - [1、压缩+删除无用代码；](#1%E5%8E%8B%E7%BC%A9%E5%88%A0%E9%99%A4%E6%97%A0%E7%94%A8%E4%BB%A3%E7%A0%81)
+    - [2、CDN加载文件；](#2cdn%E5%8A%A0%E8%BD%BD%E6%96%87%E4%BB%B6)
+    - [3、Tree-shaking(webpack自带) && Scope-hoistiong](#3tree-shakingwebpack%E8%87%AA%E5%B8%A6--scope-hoistiong)
+    - [4、DllPlugin && DllReferencePlugin](#4dllplugin--dllreferenceplugin)
+    - [5、动态加载；](#5%E5%8A%A8%E6%80%81%E5%8A%A0%E8%BD%BD)
+    - [6、打包文件分析工具&& splitChunks && 费时分析](#6%E6%89%93%E5%8C%85%E6%96%87%E4%BB%B6%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7-splitchunks--%E8%B4%B9%E6%97%B6%E5%88%86%E6%9E%90)
+    - [8、热更新；](#8%E7%83%AD%E6%9B%B4%E6%96%B0)
+    - [9、IgnorePlugin；](#9ignoreplugin)
+    - [10、noParse；](#10noparse)
+    - [11、resolve；](#11resolve)
+    - [12、include/exclude；](#12includeexclude)
+    - [13、happypack；](#13happypack)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 
 ### WEBPACK
 
