@@ -1,13 +1,26 @@
 {
     "presets": [
-        ["@babel/preset-env", {
-            // 使用的api会自动转化，并且是按需加载
-            "useBuiltIns": "usage",
-            // babel-polyfill
-            "corejs": 2
-        }]
+        [
+            "@babel/preset-env",
+            {
+                "targets": {
+                    "edge": "17",
+                    "firefox": "60",
+                    "chrome": "67",
+                    "safari": "11.1"
+                },
+                "useBuiltIns": "usage", // 按需注入需要解析的es6语法
+                "corejs": 2
+            }
+        ]
     ],
     "plugins": [
-        ["@babel/plugin-proposal-class-properties", { loose: true }] // 是否松匹配的配置，false:Object.defineproperty, true:function
+        [
+            "@babel/plugin-transform-runtime",
+            {
+                
+            }
+        ],
+        ["@babel/plugin-proposal-class-properties", { "loose": true }] // 是否松匹配的配置，false:Object.defineproperty, true:function
     ]
 }

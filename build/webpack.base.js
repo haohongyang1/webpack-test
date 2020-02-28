@@ -1,6 +1,6 @@
 const dev = require('./webpack.dev')
 const prod = require('./webpack.prod')
-const path = require('path')
+const path = require('path') // node 路径解析
 const merge = require('webpack-merge')
 const HTMLWebpackPlugin = require('html-webpack-plugin')
 const {CleanWebpackPlugin} = require('clean-webpack-plugin')
@@ -9,7 +9,6 @@ const PurgecssWebpackPlugin = require('purgecss-webpack-plugin')
 const glob = require("glob")
 
 module.exports = (env) => {
-    console.log(env)
     let bDev = env.development
     const base = {
         // entry: path.resolve(__dirname, '../src/index.js'),
@@ -23,7 +22,10 @@ module.exports = (env) => {
             rules: [
                 {
                     test: /\.js$/,
-                    use: 'babel-loader'
+                    exclude: /node_modules/,
+                    use: {
+                        loader: 'babel-loader',
+                    }
                 },
                 {
                     test: /\.(jpe?g|png|gif)/,
@@ -61,14 +63,21 @@ module.exports = (env) => {
                 {
                     test: /\.css$/,
                     use: [
-                        bDev?'style-loader':MiniCssExtractPlugin.loader, {
-                            loader: 'css-loader',
+                        bDev?'style-loader':MiniCssExtractPlugin.loader,
+                        'css-loader',
+                        'sass-loader',
+                        {
+                            loader: 'postcss-loader',
                             options: { // 给loader传递参数
-                                importLoaders: 2 // 代表后面参数: sass-loader
+                                plugins: () => [
+                                    require('autoprefixer')({
+                                        overrideBrowserslist: ["last 2 versions", ">1%"]
+                                    })
+                                ]
+                                // importLoaders: 2 // 代表后面参数: sass-loader
                             }
-                        },
-                        'postcss-loader', 
-                        'sass-loader']
+                        }
+                    ]
                 },
                 {
                     test: /\.scss$/,
@@ -82,31 +91,32 @@ module.exports = (env) => {
               chunks: 'async', // 默认支持异步代码分割，import()，可选：async(默) all inital(只操作同步的)
               minSize: 30000, // 文件超过30K，就会抽离
             //   minRemainingSize: 0,
-              maxSize: 0,
+              maxSize: 0, // 对模块进行二次分割时使用，不推荐使用
               minChunks: 1, // 最少模块引用一次，抽离
               maxAsyncRequests: 6, // 最多6个请求
               maxInitialRequests: 4, // 最多首屏超过3个请求
-              automaticNameDelimiter: '~', // 文件命名
+              automaticNameDelimiter: '~', // 打包分隔符号
               automaticNameMaxLength: 30, // 最长名字大小
-              cacheGroups: { // 缓存组
-                defaultVendors: {
-                  test: /[\\/]node_modules[\\/]/,
-                  priority: -10 // 优先级
+              cacheGroups: { // 定义缓存组
+                commons: {
+                    test: /(react|react-dom)/, // 当模块符合这个规则
+                    name: "react_vendors",
+                    chunks: "all"
                 },
                 default: {
-                  minChunks: 1,
-                  priority: -20,
-                  reuseExistingChunk: true
+                  test: /[\\/]node_modules[\\/]/,
+                  priority: -10 // 优先级
                 }
               }
             }
         },
         output: {
-            filename: '[name].js',
+            filename: '[name]_[hash].js', // 注意这里chunkhash的配置，可以用来版本管理，当多入口时，如果一个未更改，则可以继续使用浏览器缓存进行加载
             chunkFilename: '[name].min.js', // [name]从0开始，逐个增长，如果再美化，可以在引入位置通过魔术字符串来定义
             // publicPath: '../dist', // 在webpack-dev-server里使用，如果不配置，默认为/root
             path: path.resolve(__dirname, '../dist')
         },
+        devtool: "eval",
         externals: {
             'jquery': '$' // 引入外部变量，在使用$时，是从外部引入的jq，不去打包代码中的jquery
         },

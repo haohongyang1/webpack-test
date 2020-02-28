@@ -1,4 +1,11 @@
 // 多文件 a test 
-import 'jquery'
+// import 'jquery'
+// import ""
+// console.log('testA')
+// import './a.scss'
+// import './a.css'
+// let p1 = new Promise()
+// console.log(p1)
 
-console.log('testA')
+//webpack原理-test
+export default "hello"

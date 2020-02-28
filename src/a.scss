@@ -2,4 +2,5 @@ $background: 'black';
 body {
     background: $background;
     transform: rotate(40deg);
+    display: flex;
 }

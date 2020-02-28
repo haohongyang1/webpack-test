@@ -38,15 +38,18 @@
 // 6、动态加载test-----------------------------------^.^-------------------------------
 // 固定加载
 // import calc from './calc'
-let button = document.createElement('button')
-button.addEventListener('click', () => {
-    // 草案语法 动态导入 类比 路由懒加载 import语法
-    // 原理是JSONP
-    import(/* webpackChunkName:'111' */'./calc').then(data => {
-        console.log(data)
-    })
-    console.log('click')
-})
+// let button = document.createElement('button')
+// button.addEventListener('click', () => {
+//     // 草案语法 动态导入 类比 路由懒加载 import语法，通过魔术字符串指定webpackPrefetch的值为true，在网络空闲状态下预加载
+//     // 原理是JSONP
+//     import(/* webpackChunkName:'111',webpackPrefetch: true */'./calc').then(data => {
+//         console.log(data)
+//     })
+//     console.log('click')
+// })
 
-button.innerHTML = '点我'
-document.body.appendChild(button)
+// button.innerHTML = '点我'
+// document.body.appendChild(button)
+
+// webpack原理-test
+import a from './a.js'
