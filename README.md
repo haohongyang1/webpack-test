@@ -29,8 +29,6 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-[TOC]
-
 ### WEBPACK
 
 #### 一、从0搭建自己的webpack开发环境
@@ -317,4 +315,15 @@ resolve: {
 
 #### 四、原理
 
-见/root/util/bundle.js
+1. 简单实现一个文件导入，代码转换：见/root/util/bundle.js
+2. 简单实现一个loader [官网描述](https://webpack.docschina.org/contribute/writing-a-loader/)
+3. 简单编写一个plugins [官网描述](https://webpack.docschina.org/contribute/writing-a-plugin/)
+插件是可以作用在webpack打包的整个生命周期中，所以需要了解[compiler钩子](https://webpack.docschina.org/api/compiler-hooks/) 、[compilation钩子](https://webpack.docschina.org/api/compilation-hooks/)
+4. 梳理webpack优化：
+- 确定好技术栈；(产品面向mobile or pc,要兼容哪些浏览器)
+    - js babel
+        - hot-module
+        - 压缩：生产压缩，开发不压缩
+    - css
+        - 生产压缩，开发不压缩
+        - 去重

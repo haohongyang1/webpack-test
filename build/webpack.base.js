@@ -16,6 +16,9 @@ module.exports = (env) => {
             "a": path.resolve(__dirname, "../src/a.js"),
             "b": path.resolve(__dirname, "../src/b.js")
         },
+        // resolveLoader: {
+        //     modules: ["node_modules", "./loader"]
+        // }, // 自定义loader通过该配置与loader引入方式相同
         module: {
             // 转化什么文件，用什么去转，使用哪些loader
             // loader文件写法 [](从右向左) || {} || ''
