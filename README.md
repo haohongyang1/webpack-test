@@ -29,7 +29,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-### WEBPACK
+### [WEBPACK](https://webpack.docschina.org/)
 
 #### 一、从0搭建自己的webpack开发环境
 ##### 1.什么是Webpack
@@ -68,8 +68,7 @@
     - chunkhash：每个入口对应chunk，会根据入口文件中的更改内容决定独立打包某个入口所对应的文件；
     - contenthash：根据文件内容是否变化来决定是否打包该文件；
 - mode取值，会将process.evn.NODE_ENV的值设置为production || development
-![d1babae6d16ceb6eed32446091e8182c.png](en-resource://database/436:1)
-
+![取值](./static/process.env.png)
 
 ##### 4.Webpack-dev-server
 启动本地服务，使用webpack-dev-server，npm install webpack-dev-server在内存中打包，不会产生实体文件；
@@ -185,24 +184,7 @@ https://www.npmjs.com/package/glob)
 - 图片压缩插件(降低分辨率 ) [image-webpack-loader](
 https://www.npmjs.com/package/image-webpack-loader)
 
-##### 2、CDN加载文件；
-- 意义：webpack打包出来的都会放到bundle.js（出口文件）中，bundle.js会非常庞大，所以我们引入CDN，**拆分bundle.js**
-- 使用：[bootcnd](https://www.bootcdn.cn/)，找到插件，复制script标签，粘贴进模板文件中，但是当文件较多时，不能都在index.html中引入，所以可以使用 [add-asset-html-cdn-webpack-plugin](https://www.npmjs.com/package/add-asset-html-cdn-webpack-plugin) 插件 
-    ```JavaScript
-    plugins: [
-        new AddCdnPlugin(true, {
-            'jquery': 'https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js'
-        })
-    ]
-    ```
-- 配置：声明外部文件
-    ```JavaScript
-    externals: {
-        'jquery': '$' // 引入外部变量，在使用$时，是从外部引入的jq，不去打包代码中的jquery
-    }
-    ```
-
-##### 3、Tree-shaking(webpack自带) && Scope-hoistiong
+##### 2、Tree-shaking(webpack自带) && Scope-hoistiong
 - Tree-shaking
     - 作用：去除掉js无用代码； 
     - 适用范围：默认只支持 es6语法，静态导入，只在生产环境使用；
@@ -221,12 +203,14 @@ https://www.npmjs.com/package/image-webpack-loader)
 - Scope-hoistiong（自带）
     - 作用：由于webpack打包的每个模块都会生成一个函数，会导致内存过大，所以，引入scope-hoistiong，作用域提升，减少作用域
 
-##### 4、DllPlugin && DllReferencePlugin
+
+
+##### 3、DllPlugin && DllReferencePlugin
 - [DllPlugin 动态链接库](https://www.webpackjs.com/plugins/dll-plugin/) 某种方法实现了**拆分 bundles**，同时还大大**提升了构建的速度（对项目运行优化没有帮助）**
     - 打包第三方库
     - 配置：/root/build/webpack.dll.js
     注：可以通过指定libraryTarget 来决定导出方式（导出方式即图中所示）
-    ![c36bb3e60b33093cbc166c3eab574c12.png](en-resource://database/432:1)
+    ![c36bb3e60b33093cbc166c3eab574c12.png](./static/library_result.png)
 - [DllReferencePlugin](https://www.webpackjs.com/plugins/dll-plugin/) 在项目中可以找到 上一步打包好的dll中的指定文件；
     ```JavaScript
         new DllReferencePlugin({
@@ -234,14 +218,8 @@ https://www.npmjs.com/package/image-webpack-loader)
         })
     ```
 
-##### 5、动态加载；
-- 草案语法：**import()**
-    - 使用：动态导入，可以实现**代码分割**，应用在类比、路由懒加载...;
-    - 原理：**JSONP**;
-    - 语法：返回值为Promise对象；
-- 为动态加载的文件更改文件名的配置：chunkFilename + 魔术字符串
 
-##### 6、代码分割
+##### 4、代码分割
 - 代码分割：即第三方库抽离，不同于dll这个是做缓存：生产环境下，自动将第三方库进行抽离：[optimization.splitchunks](https://webpack.js.org/plugins/split-chunks-plugin/#optimizationsplitchunks)
 - 配置：/root/util/webpack.base.js -> optimization.splitChunks，可以通过参数指定什么情况下自动分割代码，
 
@@ -253,15 +231,14 @@ https://www.npmjs.com/package/image-webpack-loader)
 | **DllPlugin** | 否 | 构建之前抽离 |开发环境提升打包速度 |
 | **Optimization.splitChunks** | 是 | 编译过程中抽离 | 生产环境分割第三方代码|
 
-##### 7、打包文件分析工具
+##### 5、动态加载；
+- 草案语法：**import()**
+    - 使用：动态导入，可以实现**代码分割**，应用在类比、路由懒加载...;
+    - 原理：**JSONP**;
+    - 语法：返回值为Promise对象；
+- 为动态加载的文件更改文件名的配置：chunkFilename + 魔术字符串
 
-- 打包分析工具：[webpack-bundle-analyzer](https://www.npmjs.com/package/webpack-bundle-analyzer) 可以分析打包依赖关系，以及包的大小
-
-- 费时分析：[speed-measure-webpack-plugin](https://www.npmjs.com/package/speed-measure-webpack-plugin)  可以计算每一步执行的运行速度
-
-
-
-##### 8、热更新(模块热替换Hot Module Replacement)；
+##### 6、热更新(模块热替换Hot Module Replacement)；
 - 定义：**模块热替换**是Webpack提供的最有用的功能之一，它允许在运行时替换、添加、删除各种模块，而无需进行完全刷新重新加载整个页面；[了解更多点击进入官网](https://webpack.docschina.org/guides/hot-module-replacement/#%E5%90%AF%E7%94%A8-hmr)
 - 实现：
     - 保留在完全重新加载页面时丢失的应用程序的状态；
@@ -283,6 +260,29 @@ https://www.npmjs.com/package/image-webpack-loader)
     }
     ```
     如果在项目中使用，不用单独配置，配置框架loader即可，
+
+##### 7、happypack；
+
+[happypack](https://www.npmjs.com/package/happypack)多线程打包，将不同的逻辑交给不同的线程来处理
+
+
+
+##### 8、CDN加载文件；
+- 意义：webpack打包出来的都会放到bundle.js（出口文件）中，bundle.js会非常庞大，所以我们引入CDN，**拆分bundle.js**
+- 使用：[bootcnd](https://www.bootcdn.cn/)，找到插件，复制script标签，粘贴进模板文件中，但是当文件较多时，不能都在index.html中引入，所以可以使用 [add-asset-html-cdn-webpack-plugin](https://www.npmjs.com/package/add-asset-html-cdn-webpack-plugin) 插件 
+    ```JavaScript
+    plugins: [
+        new AddCdnPlugin(true, {
+            'jquery': 'https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js'
+        })
+    ]
+    ```
+- 配置：声明外部文件
+    ```JavaScript
+    externals: {
+        'jquery': '$' // 引入外部变量，在使用$时，是从外部引入的jq，不去打包代码中的jquery
+    }
+    ```
 
 ##### 9、IgnorePlugin；
 忽略import和require语法
@@ -308,9 +308,13 @@ resolve: {
 
 在使用loader 时，可以指定哪些文件不通过loader，或者指定哪些文件通过loader
 
-##### 13、happypack；
+##### 13、打包文件分析工具
 
-[happypack](https://www.npmjs.com/package/happypack)多线程打包，将不同的逻辑交给不同的线程来处理
+- 打包分析工具：[webpack-bundle-analyzer](https://www.npmjs.com/package/webpack-bundle-analyzer) 可以分析打包依赖关系，以及包的大小
+
+- 费时分析：[speed-measure-webpack-plugin](https://www.npmjs.com/package/speed-measure-webpack-plugin)  可以计算每一步执行的运行速度
+
+
 
 
 #### 四、原理
@@ -320,10 +324,10 @@ resolve: {
 3. 简单编写一个plugins [官网描述](https://webpack.docschina.org/contribute/writing-a-plugin/)
 插件是可以作用在webpack打包的整个生命周期中，所以需要了解[compiler钩子](https://webpack.docschina.org/api/compiler-hooks/) 、[compilation钩子](https://webpack.docschina.org/api/compilation-hooks/)
 4. 梳理webpack优化：
-- 确定好技术栈；(产品面向mobile or pc,要兼容哪些浏览器)
-    - js babel
-        - hot-module
-        - 压缩：生产压缩，开发不压缩
-    - css
-        - 生产压缩，开发不压缩
-        - 去重
+    - 确定好技术栈；(产品面向mobile or pc,要兼容哪些浏览器)
+        - js babel
+            - hot-module
+            - 压缩：生产压缩，开发不压缩
+        - css
+            - 生产压缩，开发不压缩
+            - 去重
